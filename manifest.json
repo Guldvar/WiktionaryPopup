@@ -1,0 +1,21 @@
+{
+    "name": "Wiktionary Popup",
+    "description": "Snälla funka",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": 
+    [{
+        "matches": ["*://*/*"],
+        "js":["content.js"],
+        "css": ["main.css"]
+    }],
+    "permissions": ["activeTab", "scripting", "storage"],
+    "host_permissions": ["https://*/"],
+    "action": 
+    {
+        "default_popup": "popup.html"
+    }
+  }

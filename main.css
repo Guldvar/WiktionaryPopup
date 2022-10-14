@@ -1,0 +1,81 @@
+.wiktionary-popup
+{
+    background-color: #d1d1d1;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico);
+    background-size: 20px;
+    border: 1px black solid;
+    transition-property: width, height;
+    transition-duration: 0.3s;
+    margin: 0;
+    padding: 0;
+
+}
+
+.wiktionary-popup.open
+{
+    width: 20rem;
+    height: 15rem;
+    background-image: none;
+    overflow: hidden;
+    background-color: rgb(255 250 240);
+    display: flex;
+    flex-flow: column;
+    cursor: initial;
+}
+
+.open > *
+{
+    margin-inline-start: auto;
+}
+
+.open>header
+{
+    width: 20rem;
+    margin: 0;
+    flex: 0 1 auto;
+}
+
+.open>header>h3
+{
+    margin: 0;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.17em;
+    font-weight: 100;
+}
+
+.open>main
+{
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.open a
+{
+    color: blue;
+    cursor: pointer;
+}
+
+.lang-header
+{
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.category-header
+{
+    font-weight:600;
+    font-size: 1.1em;
+    margin-left: 1rem;
+}
+
+.open p
+{
+    margin-left: 1rem;
+}
