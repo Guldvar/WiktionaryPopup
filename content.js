@@ -4,35 +4,24 @@ let locked = false;
 let savedSelection = "";
 
 const PERCENT_ENCODE = { '%': '%25', '&': '%26', "?": "%3F", '=': '%3D', '/': '%2F' };
-const LANGS = ['English', 'French'];
-const CATEGORIES =
-{
-    'Etymology':
-        {},
-    'Pronunciation': {},
-    'Noun': { skip2: true },
-    'Adjective': { skip2: true },
-    'Verb': { skip2: true },
-    'Adverb': { skip2: true }
-};
+const LANGS = ['English', 'French', 'Hungarian'];
+const FORBIDDEN_CATS = ['References', 'See also'];
 
 const isBefore = (elementX, elementY, container) =>
 {
     let items = container.querySelectorAll('*');
-    let result = false;
     for (const item of items)
     {
         if (item === elementX)
         {
-            result = true;
-            break;
-        } else if (item === elementY)
+            return true;
+        }
+        if (item === elementY)
         {
-            result = false;
-            break;
+            return false;
         }
     }
-    return result;
+    return false;
 };
 
 const clean = (element, onResponse) =>
@@ -40,11 +29,11 @@ const clean = (element, onResponse) =>
     element.removeAttribute('class');
     if (element.hasAttribute('href'))
     {
-        element.removeAttribute('href')
+        element.removeAttribute('href');
         element.addEventListener('click', (e) =>
         {
             e.preventDefault();
-            console.log("click")
+            console.log("click");
             let requestString = element.innerText;
             for (const key in PERCENT_ENCODE)
             {
@@ -82,16 +71,20 @@ document.addEventListener('selectionchange', () =>
     let element = document.querySelector(".wiktionary-popup");
     if (!element)
     {
-        element = document.createElement('div');
+        element = document.createElement('iframe');
+        element.src = "about:blank";
         element.classList.add('wiktionary-popup');
         document.body.append(element);
-        element.addEventListener('click', async () =>
+        element.contentDocument.documentElement.style.cursor = "pointer";
+        element.contentDocument.addEventListener('click', async () =>
         {
             if (!isOpen)
             {
                 isOpen = true;
                 element.classList.add('open');
-                element.innerHTML =
+                element.contentDocument.body.className = "wik-frame-body";
+                element.contentDocument.documentElement.style.cursor = null;
+                element.contentDocument.body.innerHTML =
                     `<header>
                         <h3>${savedSelection}</h3>
                     </header>
@@ -104,80 +97,131 @@ document.addEventListener('selectionchange', () =>
                 }
                 const onResponse = ({ status, content, title }) => 
                 {
-                    console.log(status)
+                    console.log(status);
                     if (status == "success")
                     {
-                        const main = element.querySelector('main');
+                        element.contentWindow.scrollTo(0, 0);
+                        const main = element.contentDocument.querySelector('main');
                         main.innerHTML = "";
-                        element.querySelector('header').querySelector('h3').innerText = title;
+                        element.contentDocument.querySelector('header h3').innerText = title;
                         const contentElement = new DOMParser().parseFromString(content, "text/html").querySelector('#mw-content-text');
                         const allLangs = Array.from(contentElement.querySelectorAll('h2'));
                         allLangs.splice(0, 1);
-                        for (const lang of LANGS)
+                        for (const langElement of allLangs)
                         {
-                            let langElement = contentElement.querySelector(`#${lang}`);
-                            if (langElement)
+                            const lang = langElement.firstElementChild.innerText;
+                            const langHead = clean(langElement.firstElementChild.cloneNode(true));
+                            langHead.classList.add('lang-header');
+                            main.append(langHead);
+                            main.append(document.createElement('br'));
+                            console.log(`Found entry for ${lang}`);
+                            const categoryHeadings = [];
+                            let activeHeader = langElement.nextElementSibling;
+                            while (true)
                             {
-                                const langHead = clean(langElement.cloneNode(true));
-                                langHead.classList.add('lang-header');
-                                main.append(langHead);
-                                main.append(document.createElement('br'));
-                                console.log(`Found entry for ${lang}`);
-                                langElement = langElement.parentElement;
-                                const nr = allLangs.indexOf(langElement);
-                                for (const category in CATEGORIES)
+                                if (!activeHeader || activeHeader.tagName === "H2")
                                 {
-                                    const allOfCat = contentElement.querySelectorAll(`[id*="${category}"]`);
-                                    let categoryHeading;
-                                    for (const instance of allOfCat)
+                                    break;
+                                }
+                                else if (/^H(3|4)$/.test(activeHeader.tagName) && !FORBIDDEN_CATS.includes(activeHeader.firstElementChild.innerText))
+                                {
+                                    console.log(activeHeader.firstElementChild.innerText);
+                                    categoryHeadings.push(activeHeader);
+                                }
+                                activeHeader = activeHeader.nextElementSibling;
+                            }
+                            categoryHeadings.forEach((categoryHeading) =>
+                            {
+                                const catHead = clean(categoryHeading.firstElementChild.cloneNode(true));
+                                catHead.classList.add('category-header');
+                                main.append(catHead);
+                                main.append(document.createElement('br'));
+                                let activeEntryElement = categoryHeading.nextElementSibling;
+                                const content = [];
+                                while (true)
+                                {
+                                    if (!activeEntryElement || /^H.$/.test(activeEntryElement.tagName))
                                     {
-                                        if (isBefore(langElement, instance, contentElement) && (allLangs.length - nr == 1 || !isBefore(allLangs[nr + 1], instance, contentElement)))
+                                        break;
+                                    }
+                                    if (activeEntryElement.tagName.includes('SUP'))
+                                    {
+                                        activeEntryElement = activeEntryElement.nextElementSibling;
+                                        continue;
+                                    }
+                                    let entryContent = activeEntryElement;
+                                    activeEntryElement = entryContent.nextElementSibling;
+                                    if (entryContent.className === "NavFrame")
+                                    {
+                                        if (entryContent.querySelector('table'))
                                         {
-
-                                            const catHead = clean(instance.cloneNode(true));
-                                            catHead.classList.add('category-header');
-                                            main.append(catHead);
-                                            main.append(document.createElement('br'));
-                                            categoryHeading = instance.parentElement;
-                                            break;
+                                            const tableHeader = entryContent.querySelector('.NavHead');
+                                            if (tableHeader.firstElementChild)
+                                            {
+                                                tableHeader.firstElementChild.remove();
+                                            }
+                                            const tableTitle = tableHeader.innerHTML;
+                                            const table = entryContent.querySelector('table');
+                                            console.log(entryContent);
+                                            table.style = null;
+                                            table.firstElementChild.prepend(document.createElement('tr'));
+                                            const th = document.createElement('th');
+                                            th.colSpan = "100";
+                                            th.innerHTML = tableTitle;
+                                            table.firstElementChild.firstElementChild.append(th);
+                                            entryContent = table;
                                         }
                                     }
-                                    if (categoryHeading)
+                                    clean(entryContent, onResponse);
+                                    for (const li of entryContent.querySelectorAll('li'))
                                     {
-                                        const entryContent = CATEGORIES[category].skip2 ? categoryHeading.nextElementSibling.nextElementSibling : categoryHeading.nextElementSibling;
-                                        clean(entryContent, onResponse);
-                                        for (const li of entryContent.querySelectorAll('li'))
+                                        for (const ul of li.querySelectorAll('ul'))
                                         {
-                                            for (const ul of li.querySelectorAll('ul'))
+                                            for (const lii of ul.querySelectorAll('li'))
                                             {
-                                                for (const lii of ul.querySelectorAll('li'))
+                                                if (lii.querySelector('div'))
                                                 {
-                                                    if (lii.querySelector('div'))
+                                                    lii.querySelector('div').outerHTML = lii.querySelector('div').innerHTML;
+                                                    if (lii.querySelector('dd div'))
                                                     {
-                                                        lii.querySelector('div').outerHTML = lii.querySelector('div').innerHTML;
-                                                        if (lii.querySelector('dd').querySelector('div'))
-                                                        {
-                                                            lii.querySelector('dd').querySelector('div').outerHTML = lii.querySelector('dd').querySelector('div').innerHTML;
-                                                        }
+                                                        lii.querySelector('dd div').outerHTML = lii.querySelector('dd').querySelector('div').innerHTML;
                                                     }
                                                 }
-
                                             }
+
                                         }
-                                        main.append(entryContent);
-                                        console.log(`Found ${category} for ${lang}:`, CATEGORIES[category].skip2 ? categoryHeading.nextElementSibling.nextElementSibling : categoryHeading.nextElementSibling);
+                                    }
+                                    if (entryContent.tagName === "TABLE")
+                                    {
+                                        const tableContainer = document.createElement('div');
+                                        tableContainer.className = "table-container";
+                                        main.append(tableContainer);
+                                        tableContainer.append(entryContent);
                                     }
                                     else
                                     {
-                                        console.log(`Found no ${category} for ${lang}`);
+                                        main.append(entryContent);
                                     }
+                                    content.push(entryContent);
                                 }
-                            }
-                            else
-                            {
-                                console.log(`Found no entry for ${lang}`);
-                            }
+                                console.log(`Found ${catHead.innerText} for ${lang}:`, content);
+                            });
                         }
+                    }
+                    else
+                    {
+                        if (/^[A-Z]/.test(savedSelection))
+                        {
+                            requestString = requestString[0].toLowerCase() + requestString.slice(1);
+                            savedSelection = savedSelection[0].toLowerCase() + savedSelection.slice(1);
+                        }
+                        else if (/[A-Z]/.test(savedSelection))
+                        {
+                            requestString = requestString.toLowerCase();
+                            savedSelection = savedSelection.toLowerCase();
+                        }
+                        element.contentDocument.querySelector('header h3').innerHTML = savedSelection;
+                        chrome.runtime.sendMessage({ text: "fetch", request: requestString, title: savedSelection }, onResponse);
                     }
                 };
                 chrome.runtime.sendMessage({ text: "fetch", request: requestString, title: savedSelection }, onResponse);
@@ -206,3 +250,8 @@ document.addEventListener('selectionchange', () =>
     element.style.top = `${boundingRect.top + window.scrollY - 20}px`;
     element.style.left = `${boundingRect.left + window.scrollX}px`;
 });
+
+const appendUntilHeader = () =>
+{
+
+};

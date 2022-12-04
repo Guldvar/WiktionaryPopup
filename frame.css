@@ -1,0 +1,80 @@
+.wik-frame-body
+{
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.wik-frame-body *
+{
+    margin-inline-start: auto;
+    font-size: 1em;
+}
+
+.wik-frame-body small
+{
+    font-size: smaller;
+}
+
+.wik-frame-body .table-container
+{
+    overflow-x: auto;
+}
+
+.wik-frame-body abbr
+{
+    cursor: help;
+}
+
+.wik-frame-body header
+{
+    width: 20rem;
+    margin: 0;
+    flex: 0 1 auto;
+}
+
+.wik-frame-body header>h3
+{
+    margin: 0;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.17em;
+    font-weight: 100;
+    box-sizing: border-box;
+    border-bottom: 1px solid black;
+}
+
+.wik-frame-body main
+{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 13px !important;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.wik-frame-body a
+{
+    color: blue;
+    cursor: pointer;
+}
+
+.wik-frame-body .lang-header
+{
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+.wik-frame-body .category-header
+{
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-left: 1rem;
+}
+
+.wik-frame-body p
+{
+    margin-left: 1rem;
+}
