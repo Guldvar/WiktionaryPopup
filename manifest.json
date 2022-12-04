@@ -11,6 +11,12 @@
         "matches": ["*://*/*"],
         "js":["content.js"],
         "css": ["main.css"]
+    },
+    {
+        "matches": ["*://*/*"],
+        "match_about_blank": true,
+        "all_frames": true,
+        "css": ["frame.css"]
     }],
     "permissions": ["activeTab", "scripting", "storage"],
     "host_permissions": ["https://*/"],
