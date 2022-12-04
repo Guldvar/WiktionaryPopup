@@ -8,6 +8,8 @@
 {
     margin-inline-start: auto;
     font-size: 1em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
 }
 
 .wik-frame-body small
@@ -32,6 +34,28 @@
     flex: 0 1 auto;
 }
 
+.wik-frame-body img
+{
+    width: 10rem;
+    left: 4rem;
+    position: relative;
+}
+
+.wik-frame-body .wiki-link
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.8em;
+    color: blue;
+    cursor: pointer;
+}
+
+.wik-frame-body .wiki-link:hover
+{
+    text-decoration: underline;
+}
+
 .wik-frame-body header>h3
 {
     margin: 0;
@@ -45,7 +69,6 @@
 
 .wik-frame-body main
 {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
     flex: 1 1 auto;
     overflow-y: auto;
     overflow-x: hidden;

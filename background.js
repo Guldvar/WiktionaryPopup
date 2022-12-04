@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) =>
                     {
                         response2.text().then((doc) =>
                         {
-                            sendResponse({ status: "success", content: doc, title: msg.title });
+                            sendResponse({ status: "success", content: doc, title: msg.title, request: msg.request });
                         });
                     });
 
