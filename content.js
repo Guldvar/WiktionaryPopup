@@ -79,11 +79,7 @@ const fetchPage = (requestString) =>
                 main.append(document.createElement('br'));
                 const a = document.createElement('a');
                 a.href = `https://en.wiktionary.org/w/index.php?search=${msg.request}`;
-                a.addEventListener('click', (e) =>
-                {
-                    e.preventDefault();
-                    window.open(a.href, '_blank');
-                });
+                a.target = '_blank';
                 a.innerText = `Search Wiktionary for "${msg.title}"?`;
                 main.append(a);
             }
@@ -117,12 +113,7 @@ const createHeader = (title, request) =>
     wikiLink.href = `https://en.wiktionary.org/wiki/${request}`;
     wikiLink.classList.add("wiki-link");
     wikiLink.innerText = ("(Link)");
-    wikiLink.addEventListener('click', (e) =>
-    {
-        e.preventDefault();
-        window.open(wikiLink.href, '_blank');
-
-    });
+    wikiLink.target = '_blank';
     header.append(wikiLink);
     header.querySelector('h3').innerText = title;
 };
