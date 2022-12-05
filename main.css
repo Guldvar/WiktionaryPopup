@@ -1,12 +1,11 @@
 .wiktionary-popup
 {
-    background-color: #d1d1d1;
     width: 20px;
     height: 20px;
     position: absolute;
     border-radius: 5px;
     cursor: pointer;
-    background-image: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico);
+    background: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico) white;
     background-size: 20px;
     border: 1px black solid;
     transition-property: width, height;

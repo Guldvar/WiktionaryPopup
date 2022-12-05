@@ -5,20 +5,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) =>
 
         fetch(`https://en.wiktionary.org/w/api.php?action=query&titles=${msg.request}&format=json`).then((response) =>
         {
-            response.json().then((docExists) =>
+            response.json().then((responseJSON) =>
             {
-                console.log(docExists);
-                if (docExists.query.pages.hasOwnProperty('-1') && docExists.query.pages['-1'].hasOwnProperty('missing'))
+                if (responseJSON.query.pages.hasOwnProperty('-1') && (responseJSON.query.pages['-1'].hasOwnProperty('missing') || (responseJSON.query.pages['-1'].hasOwnProperty('invalid'))))
                 {
-                    sendResponse({ status: "failed" });
+                    sendResponse({ status: "failed", title: responseJSON.query.pages['-1'].title, request: msg.request });
                 }
                 else
                 {
-                    fetch(`https://en.wiktionary.org/wiki/${msg.request}`).then((response2) => 
+                    fetch(`https://en.wiktionary.org/wiki/${msg.request}`).then((rawPage) => 
                     {
-                        response2.text().then((doc) =>
+                        rawPage.text().then((doc) =>
                         {
-                            sendResponse({ status: "success", content: doc, title: msg.title, request: msg.request });
+                            let title;
+                            for (key in responseJSON.query.pages)
+                            {
+                                title = responseJSON.query.pages[key].title;
+                            }
+                            sendResponse({ status: "success", content: doc, title: title, request: msg.request });
                         });
                     });
 

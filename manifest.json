@@ -19,9 +19,5 @@
         "css": ["frame.css"]
     }],
     "permissions": ["activeTab", "scripting", "storage"],
-    "host_permissions": ["https://*/"],
-    "action": 
-    {
-        "default_popup": "popup.html"
-    }
+    "host_permissions": ["https://*/"]
   }

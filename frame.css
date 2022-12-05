@@ -6,10 +6,14 @@
 
 .wik-frame-body *
 {
-    margin-inline-start: auto;
     font-size: 1em;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 
+}
+
+.wik-frame-body audio
+{
+    width: 7rem;;
 }
 
 .wik-frame-body small
@@ -47,13 +51,6 @@
     right: 0;
     top: 0;
     font-size: 0.8em;
-    color: blue;
-    cursor: pointer;
-}
-
-.wik-frame-body .wiki-link:hover
-{
-    text-decoration: underline;
 }
 
 .wik-frame-body header>h3
@@ -81,6 +78,11 @@
 {
     color: blue;
     cursor: pointer;
+}
+
+.wik-frame-body a:hover
+{
+    text-decoration: underline;
 }
 
 .wik-frame-body .lang-header
