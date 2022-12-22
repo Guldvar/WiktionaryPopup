@@ -43,15 +43,29 @@ const init = () =>
 
 const saveState = (key, value) =>
 {
-    const storageObj = {};
-    storageObj[key] = value;
-    chrome.storage.sync.set(storageObj);
+    try
+    {
+        const storageObj = {};
+        storageObj[key] = value;
+        chrome.storage.sync.set(storageObj);
+    }
+    catch (e)
+    {
+
+    }
 };
 
 const getState = async (key) => 
 {
-    const result = await chrome.storage.sync.get([key]);
-    return result[key];
+    try
+    {
+        const result = await chrome.storage.sync.get([key]);
+        return result[key];
+    }
+    catch (e)
+    {
+
+    }
 };
 
 const updateState = async () =>
