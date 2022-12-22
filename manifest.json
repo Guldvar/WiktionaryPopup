@@ -1,7 +1,7 @@
 {
     "name" : "Wiktionary Popup",
-    "description" : "Snälla funka",
-    "version" : "1.0",
+    "description" : "Allows access to Wiktionary by selecting words. ",
+    "version" : "1.1",
     "manifest_version" : 3,
     "background": {
         "service_worker" : "background.js"

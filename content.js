@@ -2,15 +2,25 @@
 let isOpen = false;
 let locked = false;
 let savedSelection = "";
+let whitelist;
 
 const PERCENT_ENCODE = { '%': '%25', '&': '%26', "?": "%3F", '=': '%3D', '/': '%2F' };
-const FORBIDDEN_CATS = ['References', 'See also', 'Further reading', 'Translations', 'Derived terms'];
+const FORBIDDEN_CATS = ['References'];
+const forbiddenCats = [];
+const OPTION_CATS = ['See also', 'Further reading', 'Translations', 'Derived terms'];
 const FORBIDDEN_CLASSES = ['mw-empty-elt', 'sister-project', 'noprint'];
+const FORBIDDEN_LANGS = [];
 
 const frameElement = document.createElement('iframe');
 
 const init = () =>
 {
+    if (document.documentElement.tagName == "svg") 
+    {
+        locked = true;
+        isOpen = true;
+        return;
+    }
     frameElement.src = "about:blank";
     frameElement.classList.add('wiktionary-popup');
     frameElement.style.display = "none";
@@ -28,14 +38,51 @@ const init = () =>
     });
 
     document.addEventListener('selectionchange', onSelectionChange);
-
-
+    updateState();
 };
 
-const onClick = () =>
+const saveState = (key, value) =>
+{
+    const storageObj = {};
+    storageObj[key] = value;
+    chrome.storage.sync.set(storageObj);
+};
+
+const getState = async (key) => 
+{
+    const result = await chrome.storage.sync.get([key]);
+    return result[key];
+};
+
+const updateState = async () =>
+{
+    forbiddenCats.length = 0;
+    forbiddenCats.push(...FORBIDDEN_CATS);
+    for (const cat of OPTION_CATS) 
+    {
+        const enabled = await getState(cat) ? true : false;
+        if (!enabled) 
+        {
+            forbiddenCats.push(cat);
+        }
+    }
+
+    whitelist = await getState('whitelist') ? true : false;
+    let langs = await getState('langs');
+    if (!langs) 
+    {
+        langs = [];
+        saveState('langs', langs);
+    }
+    FORBIDDEN_LANGS.length = 0;
+    FORBIDDEN_LANGS.push(...langs);
+};
+
+const onClick = async () =>
 {
     if (!isOpen)
     {
+        await updateState();
         isOpen = true;
         frameElement.classList.add('open-wik-popup');
         frameElement.contentDocument.body.className = "wik-frame-body";
@@ -90,7 +137,9 @@ const fetchPage = (requestString) =>
     }
     catch (e)
     {
-        frameElement.contentDocument.querySelector('main').innerHTML = `<strong>${e}</strong> <br>Please reload page`;
+        console.trace(e);
+        frameElement.contentDocument.querySelector('main').innerHTML = `<strong>${"Extension context invalidated"}</strong> <br>Please reload page`;
+        loadingContainer.remove();
     }
 };
 
@@ -130,7 +179,14 @@ const createEntries = (content) =>
             continue;
         }
 
-        const langHeader = clean(langElement.firstElementChild.cloneNode(true));
+        const langHeader = clean(langElement.querySelector('.mw-headline').cloneNode(true));
+        if (whitelist && !FORBIDDEN_LANGS.includes(langHeader.innerText) || !whitelist && FORBIDDEN_LANGS.includes(langHeader.innerText))
+        {
+
+            continue;
+        }
+
+
         langHeader.classList.add('lang-header');
         main.append(langHeader);
         main.append(document.createElement('br'));
@@ -181,7 +237,7 @@ const getCategoryHeadings = (langHeaderElement) =>
         {
             break;
         }
-        else if (/^H(3|4|5)$/.test(activeHeader.tagName) && !FORBIDDEN_CATS.includes(activeHeader.firstElementChild.innerText))
+        else if (/^H(3|4|5)$/.test(activeHeader.tagName) && !forbiddenCats.includes(activeHeader.firstElementChild.innerText))
         {
             categoryHeadings.push(activeHeader);
         }
