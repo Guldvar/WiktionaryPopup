@@ -5,7 +5,8 @@
     position: absolute;
     border-radius: 5px;
     cursor: pointer;
-    background: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico) white;
+    background-image: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico);
+    color-scheme: light;
     background-size: 20px;
     border: 1px black solid;
     transition-property: width, height;
@@ -15,7 +16,7 @@
 
 }
 
-.wiktionary-popup.open
+.wiktionary-popup.open-wik-popup
 {
     width: 320px;
     height: 240px;

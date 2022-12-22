@@ -37,7 +37,7 @@ const onClick = () =>
     if (!isOpen)
     {
         isOpen = true;
-        frameElement.classList.add('open');
+        frameElement.classList.add('open-wik-popup');
         frameElement.contentDocument.body.className = "wik-frame-body";
         frameElement.contentDocument.documentElement.style.cursor = null;
         frameElement.contentDocument.body.innerHTML =
@@ -45,7 +45,6 @@ const onClick = () =>
                 <h3>${savedSelection}</h3>
             </header>
             <main>
-            <img src = "https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif">
             </main>`;
         fetchPage(formatRequest(savedSelection));
     }
@@ -53,9 +52,15 @@ const onClick = () =>
 
 const fetchPage = (requestString) =>
 {
-
+    const main = frameElement.contentDocument.querySelector('main');
+    main.innerHTML = "";
+    const loadingContainer = document.createElement('div');
+    loadingContainer.className = "loader-container";
+    loadingContainer.innerHTML = `<img class = "loading-gif" src = "https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif"/>`;
+    frameElement.contentDocument.body.append(loadingContainer);
     const onResponse = (msg) => 
     {
+        loadingContainer.remove();
         if (msg.status == "success")
         {
             onPageFetchSuccess(msg);
@@ -65,16 +70,10 @@ const fetchPage = (requestString) =>
             if (/^[A-Z]/.test(requestString))
             {
                 requestString = requestString.toLowerCase();
-                if (!chrome.runtime)
-                {
-                    window.location.reload();
-                    return;
-                }
                 fetchPage(requestString);
             }
             else
             {
-                const main = frameElement.contentDocument.querySelector('main');
                 main.innerText = "No entry found";
                 main.append(document.createElement('br'));
                 const a = document.createElement('a');
@@ -203,7 +202,7 @@ const onSelectionChange = () =>
         frameElement.style.display = "none";
         frameElement.contentDocument.documentElement.style.cursor = "pointer";
         frameElement.contentDocument.documentElement.innerHTML = "";
-        frameElement.classList.remove("open");
+        frameElement.classList.remove("open-wik-popup");
         isOpen = false;
         return;
     }
@@ -266,7 +265,6 @@ const clean = (element) =>
         }
     }
     element.style.width = null;
-
 
     for (const child of element.querySelectorAll('*'))
     {

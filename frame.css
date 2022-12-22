@@ -13,7 +13,7 @@
 
 .wik-frame-body audio
 {
-    width: 7rem;;
+    width: 7rem;
 }
 
 .wik-frame-body small
@@ -38,11 +38,10 @@
     flex: 0 1 auto;
 }
 
-.wik-frame-body img
+.wik-frame-body img.loading-gif
 {
     width: 10rem;
-    left: 4rem;
-    position: relative;
+    position: absolute;
 }
 
 .wik-frame-body .wiki-link
@@ -56,6 +55,7 @@
 .wik-frame-body header>h3
 {
     margin: 0;
+    padding: 0 3.6rem;
     text-align: center;
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 1.17em;
@@ -78,6 +78,12 @@
 {
     color: blue;
     cursor: pointer;
+    text-decoration: none;
+}
+
+.wik-frame-body a:active
+{
+    color: #faa700;
 }
 
 .wik-frame-body a:hover
@@ -102,4 +108,15 @@
 .wik-frame-body p
 {
     margin-left: 1rem;
+}
+
+.wik-frame-body .loader-container
+{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    height: 10rem;
+    margin-top: -1rem;
+    overflow: hidden;
 }
