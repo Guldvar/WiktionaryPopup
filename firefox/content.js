@@ -7,19 +7,47 @@ let loading = false;
 let mouseOver = false;
 let savedSelection = "";
 /**
+ * True if whitelist is enabled, false if blacklist is enabled.
  * @type boolean
  */
 let whitelist;
 
-const PERCENT_ENCODE = { '%': '%25', '&': '%26', "?": "%3F", '=': '%3D', '/': '%2F' };
-const FORBIDDEN_CATS = ['References'];
+
+/**
+ * Array of the categories that by default are not shown without the option to enable them.
+ */
+const ALWAYS_FORBIDDEN_CATS = ['References'];
+
+/**
+ * Array of the categories that are not shown, regardless of why.
+ */
 const forbiddenCats = [];
+
+/**
+ * Array of the categories that can be enabled or disabled in the config.
+ */
 const OPTION_CATS = ['See also', 'Further reading', 'Translations', 'Derived terms'];
+
+//There is probably a better way to remove these
+/**
+ * MediaWiki classes that do not bring joy.
+ */
 const FORBIDDEN_CLASSES = ['mw-empty-elt', 'sister-project', 'noprint'];
+
+/**
+ * Array of the languages listed (blacklist or whitelist) in the config by the user.
+ */
 const listedLangs = [];
 
+/**
+ * The div element containing the popup. Shown in small form when the user selects text and in large form when the user clicks on it
+ * @property {HTMLDivElement} body - Another div element which forms the "body" of the popup and is a child of documentFrame 
+ */
 const documentFrame = document.createElement('div');
 
+/**
+ * Initializes the documentFrame as well as calling updateState to sync stored configs
+ */
 const init = () =>
 {
     /*
@@ -55,6 +83,11 @@ const init = () =>
     updateState();
 };
 
+/**
+ * Saves the given value in synced browser storage at the given key 
+ * @param {string} key The key to save at
+ * @param {object} value The value to save
+ */
 const saveState = (key, value) =>
 {
     try
@@ -69,6 +102,11 @@ const saveState = (key, value) =>
     }
 };
 
+/**
+ * Retrieves a stored object from synced browser storage
+ * @param {string} key The key to the stored object
+ * @returns {object} The object stored at the key
+ */
 const getState = async (key) => 
 {
     try
@@ -82,10 +120,13 @@ const getState = async (key) =>
     }
 };
 
+/**
+ * Retrieves stored configs from browser storage and sets the relevant variables for the active session.
+ */
 const updateState = async () =>
 {
     forbiddenCats.length = 0;
-    forbiddenCats.push(...FORBIDDEN_CATS);
+    forbiddenCats.push(...ALWAYS_FORBIDDEN_CATS);
     for (const cat of OPTION_CATS) 
     {
         const enabled = await getState(cat) ? true : false;
@@ -106,6 +147,9 @@ const updateState = async () =>
     listedLangs.push(...langs);
 };
 
+/**
+ * Called when the documentFrame is clicked on. Expands it to the large view, clears it and starts fetching the active selection.
+ */
 const onClick = async () =>
 {
     if (!popupOpen)
@@ -115,23 +159,35 @@ const onClick = async () =>
         documentFrame.classList.add('open-wik-popup');
         documentFrame.body.className = "wik-frame-body";
         documentFrame.style.cursor = null;
-        documentFrame.body.innerHTML =
-            `<header>
-                <h3>${savedSelection}</h3>
-            </header>
-            <main>
-            </main>`;
+        
+        const header = document.createElement('header');
+        const h3 = document.createElement('h3');
+        const main = document.createElement('main');
+        h3.innerText = savedSelection;
+        header.append(h3);
+
+        documentFrame.body.innerHTML = "";
+
+        documentFrame.body.append(header);
+        documentFrame.body.append(main);
         fetchPage(formatRequest(savedSelection));
     }
 };
 
-const fetchPage = (requestString) =>
+/**
+ * Fetches a page from a formatted request. If the fetch fails another is attempted in all lower-case. On success onPageFetchSuccess is triggered to "render" and show the page. 
+ * @param {string} request The formatted page request
+ */
+const fetchPage = (request) =>
 {
     const main = documentFrame.body.querySelector('main');
     main.innerHTML = "";
     const loadingContainer = document.createElement('div');
     loadingContainer.className = "loader-container";
-    loadingContainer.innerHTML = `<img class = "loading-gif" src = "${browser.runtime.getURL('load.gif')}"/>`;
+    const loadImg = new Image();
+    loadImg.src = browser.runtime.getURL('load.gif');
+    loadImg.className = "loading-gif";
+    loadingContainer.append(loadImg);
     documentFrame.body.append(loadingContainer);
     loading = true;
     const onResponse = (msg) => 
@@ -144,10 +200,10 @@ const fetchPage = (requestString) =>
         }
         else
         {
-            if (/^[A-Z]/.test(requestString))
+            if (/^[A-Z]/.test(request))
             {
-                requestString = requestString.toLowerCase();
-                fetchPage(requestString);
+                request = request.toLowerCase();
+                fetchPage(request);
             }
             else
             {
@@ -163,7 +219,7 @@ const fetchPage = (requestString) =>
     };
     try
     {
-        browser.runtime.sendMessage({ text: "fetch", request: requestString }, onResponse);
+        browser.runtime.sendMessage({ request: request }, onResponse);
     }
     catch (e)
     {
@@ -173,6 +229,10 @@ const fetchPage = (requestString) =>
     }
 };
 
+/**
+ * 
+ * @param {object} msg A response from the background script with a content string for the raw document, a title string for the title of the page and a request string for the original request
+ */
 const onPageFetchSuccess = ({ content, title, request }) =>
 {
     documentFrame.scrollTo(0, 0);
@@ -180,7 +240,12 @@ const onPageFetchSuccess = ({ content, title, request }) =>
     createEntries(content);
 };
 
-const createHeader = (title, request) =>
+/**
+ * Creates a header on the popup for the given page title and link.
+ * @param {string} title The title of page 
+ * @param {string} relLink The relative URL to the page
+ */
+const createHeader = (title, relLink) =>
 {
     const header = documentFrame.body.querySelector('header');
     if (header.querySelector('.wiki-link'))
@@ -188,7 +253,7 @@ const createHeader = (title, request) =>
         header.querySelector('.wiki-link').remove();
     }
     const wikiLink = document.createElement('a');
-    wikiLink.href = `https://en.wiktionary.org/wiki/${request}`;
+    wikiLink.href = `https://en.wiktionary.org/wiki/${relLink}`;
     wikiLink.classList.add("wiki-link");
     wikiLink.innerText = ("(Link)");
     wikiLink.target = '_blank';
@@ -196,6 +261,10 @@ const createHeader = (title, request) =>
     header.querySelector('h3').innerText = title;
 };
 
+/**
+ * Shows the entries from the fetched page.
+ * @param {string} content The raw string of the HTML document of the page 
+ */
 const createEntries = (content) =>
 {
     const main = documentFrame.body.querySelector('main');
@@ -263,6 +332,11 @@ const createEntries = (content) =>
     }
 };
 
+/**
+ * Extracts all category headings belonging to a given language.
+ * @param {HTMLElement} langHeaderElement The relevant language header in the fetched document
+ * @returns {HTMLHeadElement[]} An array of all category headings found
+ */
 const getCategoryHeadings = (langHeaderElement) =>
 {
     const categoryHeadings = [];
@@ -282,6 +356,11 @@ const getCategoryHeadings = (langHeaderElement) =>
     return categoryHeadings;
 };
 
+const MAX_SELECTION = 40;
+
+/**
+ * Triggered when selection changes. Saved the selection if applicable. If the selection is too large or small the documentFrame is hidden, otherwise it is shown above the selection.
+ */
 const onSelectionChange = () =>
 {
     if (mouseOver || loading)
@@ -289,7 +368,7 @@ const onSelectionChange = () =>
         return;
     }
     const selection = window.getSelection().toString().trim();
-    if (!selection || /^\s*$/.test(selection) || selection.length > 40)
+    if (!selection || /^\s*$/.test(selection) || selection.length > MAX_SELECTION)
     {
         documentFrame.style.display = "none";
         documentFrame.style.cursor = "pointer";
@@ -320,6 +399,12 @@ const onSelectionChange = () =>
     }
 };
 
+/**
+ * Generates a message to be shown in case of errors or otherwise.
+ * @param {string} strongText The text of the bold part of the message
+ * @param {string} spanText The text of the nonbold part of the message
+ * @returns {HTMLElement[]} The HTML elements in an array
+ */
 const generateHTMLMessage = (strongText, spanText) =>
 {
     const strong = document.createElement('strong');
@@ -329,6 +414,12 @@ const generateHTMLMessage = (strongText, spanText) =>
     return [strong, document.createElement('br'), span];
 };
 
+/**
+ * Sanitizes the HTML of the given element from the fetched document for showing in the documentFrame.
+ * Handles tables, links and other aspects which could break the displayed entries.
+ * @param {HTMLElement} element The element to sanitize.
+ * @returns {HTMLElement} The sanitized element.
+ */
 const clean = (element) =>
 {
     if (element.className === "NavFrame" && element.querySelector('table'))
@@ -378,6 +469,11 @@ const clean = (element) =>
     return element;
 };
 
+/**
+ * Extracts tables from their MediaWiki containers to sanitize them.
+ * @param {HTMLElement} element The table to be sanitized
+ * @returns 
+ */
 const extractTable = (element) =>
 {
     const tableHeader = element.querySelector('.NavHead');
@@ -401,13 +497,14 @@ const extractTable = (element) =>
     return table;
 };
 
+/**
+ * Formats a given string to be used as a URL.
+ * @param {string} rawRequest The unformattted request. 
+ * @returns {string} The formatted string 
+ */
 const formatRequest = (rawRequest) =>
 {
-    let requestString = rawRequest;
-    for (const key in PERCENT_ENCODE)
-    {
-        requestString = requestString.replaceAll(key, PERCENT_ENCODE[key]);
-    }
+    let requestString = encodeURI(rawRequest);
     requestString = requestString.split('#')[0];
     if (requestString.length === 0)
     {
