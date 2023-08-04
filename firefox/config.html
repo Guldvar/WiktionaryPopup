@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Wiktionary popup config</title>
+        <link rel="stylesheet" href="config.css">
+    </head>
+
+    <body>
+        <h1>Wiktionary Popup Configuration</h1>
+        <main>
+            <div class="input-line">
+                <div>
+                    <label for="transl">Show translations:</label>
+                    <input type="checkbox" id="transl">
+                </div>
+                <div>
+                    <label for="seeal">Show see also:</label>
+                    <input type="checkbox" id="seeal">
+                </div>
+            </div>
+            <div class="input-line">
+                <div>
+                    <label for="furth">Show further reading:</label>
+                    <input type="checkbox" id="furth">
+                </div> 
+                <div>
+                    <label for="deriv">Show derived terms:</label>
+                    <input type="checkbox" id="deriv">
+                </div>
+            </div>
+            <div class="input-line">
+                <label for="langmd">Language select mode: </label>
+                <select id = "langmd">
+                    <option>Blacklist</option>
+                    <option>Whitelist</option>
+                </select>
+            </div>
+            <div class ="lang-area-container">
+                <div class = "lang-area-scroll">
+                    <ul class = "lang-area" id = "lang-area">
+                    </ul>
+                </div>
+                <div class="input-line">
+                    <input type = "text" placeholder="Write language to add" id = "lang-write" class  = "input-box">
+                    <button id = "lang-confirm">→</button>
+                </div>
+            </div>
+        </main>
+        <script src = "config.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,102 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body
+{
+    height: 480px;
+    width: 420px;
+    overflow-y: auto;
+}
+
+h1
+{
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: normal;
+    font-size: 1.7em;
+    border-bottom: 1px solid black;
+}
+
+main
+{
+    justify-content: space-around;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.4em;
+    padding-bottom: 10px;
+}
+
+.input-line
+{
+    position: relative;
+    height: 1.7em;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+}
+
+input[type="checkbox"]
+{
+    width: 20px;
+    height: 20px;
+    bottom: -5px;
+    position: relative;
+}
+
+.lang-area-container
+{
+    width: 80%;
+}
+
+.lang-area-scroll
+{
+    width: 100%;
+    height: 200px;
+    border: 1px solid black;
+    overflow-y: auto;
+}
+
+.input-box
+{
+    width: 100%;
+    height: 40px;
+    border: 1px solid black;
+    box-sizing: border-box;
+    list-style: none;
+    font-size: 1.3em;
+}
+
+li.input-box
+{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+li.input-box:hover
+{
+    background-color: rgb(170, 170, 170);
+}
+
+button
+{
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 1.8em;
+}
+
+button:hover
+{
+    background-color: #e9e9e9;
+    cursor: pointer;
+}

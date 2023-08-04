@@ -1,0 +1,37 @@
+{
+    "name" : "Wiktionary Popup",
+    "description" : "Allows access to Wiktionary by selecting words. ",
+    "version" : "1.1",
+    "manifest_version" : 2,
+    "background": {
+        "scripts" : ["background.js"]
+    },
+    "content_scripts" : 
+    [{
+        "matches": ["*://*/*"],
+        "js":["content.js"],
+        "css": ["main.css","frame.css"]
+    }],
+    "browser_action" : 
+    {
+        "browser_style": true,
+        "default_icon": 
+        {
+            "16": "icons/icon16.png",   
+            "24": "icons/icon24.png",   
+            "32": "icons/icon32.png", 
+            "64": "icons/icon64.png" 
+        },
+        "default_title": "Configure Wiktionary popup",  
+        "default_popup": "config.html"  
+    },
+    "permissions" : ["activeTab", "storage","https://*/"],
+    "browser_specific_settings": 
+    {
+        "gecko": 
+        {
+            "id": "wiktionarypopup@fakeaddress.com"
+        }
+    },
+    "web_accessible_resources": ["load.gif"]
+}

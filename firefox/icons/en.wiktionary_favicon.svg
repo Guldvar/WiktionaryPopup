@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg id="svg2996" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="32" width="32" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <title id="title3066">en.wiktionary favicon</title>
+ <metadata id="metadata3001">
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>en.wiktionary favicon</dc:title>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g id="layer1" transform="translate(-818.28571,-653.50507)">
+  <g id="g3056" font-style="normal" font-stretch="normal" font-variant="normal" font-weight="normal" fill="#000000">
+   <g id="text3029" style="letter-spacing:0px;word-spacing:0px;" transform="scale(1.0432075,0.95858208)" font-size="24.39767456px" line-height="125%" font-family="DejaVu Sans">
+    <path id="path3051" style="" d="m792.24,693.37,2.192,0,2.74,10.412,2.7281-10.412,2.5851,0,2.74,10.412,2.7281-10.412,2.192,0-3.4905,13.342-2.5851,0-2.871-10.936-2.8829,10.936-2.5851,0z"/>
+   </g>
+   <g id="text3033" style="letter-spacing:0px;word-spacing:0px;" transform="scale(0.98932985,1.0107852)" font-size="24.41141701000000100px" line-height="125%" font-family="MineCrafter 3">
+    <path id="path3038" d="m828.12,651.48,5.0539,0,0,1.9695-3.0412,0,0,17.826,3.0412,0,0,1.9695-5.0539,0z" fill="#000000"/>
+   </g>
+   <g id="g3040" style="letter-spacing:0px;word-spacing:0px;" transform="matrix(-0.98932985,0,0,1.0107852,1668.5714,0)" line-height="125%" font-size="24.41141701000000100px" font-family="MineCrafter 3">
+    <path id="path3042" fill="#000000" d="m828.12,651.48,5.0539,0,0,1.9695-3.0412,0,0,17.826,3.0412,0,0,1.9695-5.0539,0z"/>
+   </g>
+   <g id="text3044" style="letter-spacing:0px;word-spacing:0px;" font-size="24.3637352px" line-height="125%" font-family="Linux Biolinum G">
+    <path id="path3054" style="" d="m823.74,667.61c-0.42034-2.5934-0.63051-3.9615-0.63051-4.1042,0-0.28549,0.12095-0.55911,0.36284-0.82085,0.24189-0.2617,0.53335-0.39256,0.87438-0.39257,0.29344,0.00001,0.50956,0.0793,0.64835,0.23792,0.13879,0.15864,0.20819,0.34898,0.20819,0.57103,0,0.11898-0.0674,0.54328-0.20224,1.2729l-0.40447,2.1176-0.20224,1.0112z"/>
+   </g>
+  </g>
+ </g>
+</svg>

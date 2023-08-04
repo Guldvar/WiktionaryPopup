@@ -1,0 +1,37 @@
+.wiktionary-popup
+{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: url(https://en.wiktionary.org/static/favicon/wiktionary/en.ico);
+    color-scheme: light;
+    background-size: 20px;
+    border: 1px black solid;
+    transition-property: width, height;
+    transition-duration: 0.3s;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+    font-size: var(--rem);
+}
+
+.wiktionary-popup, .wiktionary-popup *
+{
+    --rem: 16px;
+}
+
+.wiktionary-popup.open-wik-popup
+{
+    width: 320px;
+    height: 240px;
+    background-image: none;
+    overflow: hidden;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-flow: column;
+    cursor: initial;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

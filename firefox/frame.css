@@ -1,0 +1,155 @@
+.wik-frame-body
+{
+    margin: 0;
+    line-height: normal;
+    overflow-y: visible;
+}
+
+.wik-frame-body *
+{
+    font-size: 1em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    line-height: normal;
+
+}
+
+.wik-frame-body audio
+{
+    width: 7rem;
+}
+
+.wik-frame-body small
+{
+    font-size: smaller;
+}
+
+.wik-frame-body .table-container
+{
+    overflow-x: auto;
+}
+
+.wik-frame-body table, .wik-frame-body td, .wik-frame-body tr, .wik-frame-body tbody
+{
+    border: none;
+    padding: 0;
+}
+
+.wik-frame-body abbr
+{
+    cursor: help;
+}
+
+.wik-frame-body br
+{
+    line-height: normal;
+}
+
+.wik-frame-body header
+{
+    width: calc(20 * var(--rem));
+    margin: 0;
+    flex: 0 1 auto;
+}
+
+.wik-frame-body img.loading-gif
+{
+    width: calc(10 * var(--rem));
+    position: absolute;
+}
+
+.wik-frame-body .wiki-link
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.8em;
+}
+
+.wik-frame-body header>h3
+{
+    margin: 0;
+    padding: 0 calc(3.6 * var(--rem));
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.17em;
+    font-weight: 100;
+    box-sizing: border-box;
+    border-bottom: 1px solid black;
+}
+
+.wik-frame-body main
+{
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: calc(calc(13 / 16) * var(--rem));
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.wik-frame-body a
+{
+    color: blue;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.wik-frame-body a:active
+{
+    color: #faa700;
+}
+
+.wik-frame-body a:hover
+{
+    text-decoration: underline;
+}
+
+.wik-frame-body .lang-header
+{
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+.wik-frame-body .category-header
+{
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-left: var(--rem);
+}
+
+.wik-frame-body p
+{
+    display: block;
+    margin-left: var(--rem);
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: var(--rem);
+    margin-inline-end: 0px;
+}
+
+.wik-frame-body ul
+{
+    padding-inline-start: 40px;
+    list-style-type: disc;
+    margin: 0;
+    margin-inline: 0;
+}
+
+.wik-frame-body ol
+{
+    display: block;
+    list-style-type: decimal;
+    padding-inline-start: 40px;
+}
+
+.wik-frame-body .loader-container
+{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    height: 10rem;
+    margin-top: -1rem;
+    overflow: hidden;
+}
