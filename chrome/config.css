@@ -7,8 +7,8 @@
 html,
 body
 {
-    height: 480px;
-    width: 420px;
+    height: 450px;
+    width: 360px;
     overflow-y: auto;
 }
 
@@ -41,6 +41,7 @@ main
     display: flex;
     justify-content: space-between;
     width: 90%;
+    font-size: 0.8em;
 }
 
 input[type="checkbox"]
