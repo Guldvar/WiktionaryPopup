@@ -11,7 +11,6 @@ let savedSelection = "";
  */
 let whitelist;
 
-const PERCENT_ENCODE = { '%': '%25', '&': '%26', "?": "%3F", '=': '%3D', '/': '%2F' };
 const FORBIDDEN_CATS = ['References'];
 const forbiddenCats = [];
 const OPTION_CATS = ['See also', 'Further reading', 'Translations', 'Derived terms'];
@@ -400,11 +399,7 @@ const extractTable = (element) =>
 
 const formatRequest = (rawRequest) =>
 {
-    let requestString = rawRequest;
-    for (const key in PERCENT_ENCODE)
-    {
-        requestString = requestString.replaceAll(key, PERCENT_ENCODE[key]);
-    }
+    let requestString = encodeURI(rawRequest);
     requestString = requestString.split('#')[0];
     if (requestString.length === 0)
     {
