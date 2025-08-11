@@ -26,6 +26,7 @@
 .wik-frame-body .table-container
 {
     overflow-x: auto;
+    background-color: lightgrey;
 }
 
 .wik-frame-body table, .wik-frame-body td, .wik-frame-body tr, .wik-frame-body tbody
@@ -141,6 +142,7 @@
     display: block;
     list-style-type: decimal;
     padding-inline-start: 40px;
+    margin-left: 0;
 }
 
 .wik-frame-body .loader-container

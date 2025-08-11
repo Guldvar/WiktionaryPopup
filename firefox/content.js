@@ -270,7 +270,7 @@ const createEntries = (content) =>
     const main = documentFrame.body.querySelector('main');
     main.innerHTML = "";
     const contentElement = new DOMParser().parseFromString(content, "text/html").querySelector('#mw-content-text');
-    const allLangs = Array.from(contentElement.querySelectorAll('h2'));
+    const allLangs = Array.from(contentElement.querySelectorAll('.mw-heading2'));
     let noLangs = true;
     for (const langElement of allLangs)
     {
@@ -278,8 +278,7 @@ const createEntries = (content) =>
         {
             continue;
         }
-
-        const langHeader = clean(langElement.querySelector('.mw-headline').cloneNode(true));
+        const langHeader = clean(langElement.querySelector('h2').cloneNode(true));
         const langListed = listedLangs.includes(langHeader.innerText);
         if ((whitelist || langListed) && (whitelist != langListed))
         {
@@ -289,7 +288,6 @@ const createEntries = (content) =>
         noLangs = false;
         langHeader.classList.add('lang-header');
         main.append(langHeader);
-        main.append(document.createElement('br'));
 
         const categoryHeadings = getCategoryHeadings(langElement);
         categoryHeadings.forEach((categoryHeading) =>
@@ -297,13 +295,12 @@ const createEntries = (content) =>
             const catHead = clean(categoryHeading.firstElementChild.cloneNode(true));
             catHead.classList.add('category-header');
             main.append(catHead);
-            main.append(document.createElement('br'));
 
             let activeEntryElement = categoryHeading.nextElementSibling;
             const content = [];
             while (true)
             {
-                if (!activeEntryElement || /^H.$/.test(activeEntryElement.tagName))
+                if (!activeEntryElement || activeEntryElement.classList.contains('mw-heading'))
                 {
                     break;
                 }
@@ -312,6 +309,7 @@ const createEntries = (content) =>
                 entryContent = clean(entryContent);
                 if (entryContent.tagName === "TABLE")
                 {
+                    console.log(entryContent)   
                     const tableContainer = document.createElement('div');
                     tableContainer.className = "table-container";
                     main.append(tableContainer);
@@ -343,11 +341,11 @@ const getCategoryHeadings = (langHeaderElement) =>
     let activeHeader = langHeaderElement.nextElementSibling;
     while (true)
     {
-        if (!activeHeader || activeHeader.tagName === "H2")
+        if (!activeHeader || activeHeader.classList.contains('mw-heading2'))
         {
             break;
         }
-        else if (/^H(3|4|5)$/.test(activeHeader.tagName) && !forbiddenCats.includes(activeHeader.firstElementChild.innerText))
+        else if (activeHeader.classList.contains("mw-heading") && !forbiddenCats.includes(activeHeader.firstElementChild.innerText))
         {
             categoryHeadings.push(activeHeader);
         }
@@ -424,7 +422,13 @@ const clean = (element) =>
 {
     if (element.className === "NavFrame" && element.querySelector('table'))
     {
-        element = extractTable(element);
+        element = extractNavTable(element);
+    }
+
+    if (element.classList.contains("inflection-table-wrapper") && element.querySelector('table'))
+    {
+        console.log("tjohoo")
+        element = extractInflectionTable(element);
     }
 
     for (const className of FORBIDDEN_CLASSES)
@@ -474,7 +478,7 @@ const clean = (element) =>
  * @param {HTMLElement} element The table to be sanitized
  * @returns 
  */
-const extractTable = (element) =>
+const extractNavTable = (element) =>
 {
     const tableHeader = element.querySelector('.NavHead');
     if(!tableHeader)
@@ -495,6 +499,25 @@ const extractTable = (element) =>
     th.innerHTML = tableTitle;
     table.firstElementChild.firstElementChild.append(th);
     return table;
+};
+
+/**
+ * Extracts inflection tables from their MediaWiki containers to sanitize them.
+ * @param {HTMLElement} element The table to be sanitized
+ * @returns 
+ */
+const extractInflectionTable = (element) =>
+{
+    const tableHeader = element.querySelector('.inflection-table-title');
+    if(!tableHeader)
+    {
+        return element;
+    }
+    if (tableHeader.firstElementChild)
+    {
+        tableHeader.firstElementChild.remove();
+    }
+    return element.querySelector('table');
 };
 
 /**
